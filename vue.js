@@ -1,16 +1,14 @@
 const globalWeakMap = new WeakMap();
 let activeEffect;
 
-function computed(update) {
-  const obj = {
-    get value() {
-      activeEffect = update;
-      const result = update();
-      activeEffect = null;
-      return result;
-    },
+function watchEffect(callback) {
+  // 클로져를 이용해서 callback 에 대한 정보를 가지고 있는 effect를 생성.
+  const effect = () => {
+    activeEffect = effect;
+    callback();
+    activeEffect = null;
   };
-  return obj;
+  effect();
 }
 
 function ref(value) {

@@ -1,9 +1,9 @@
 const A0 = ref(1);
 const A1 = ref(2);
-let A2 = computed(() => A0.value + A1.value);
+const A2 = ref();
 
-console.log(A2.value); // 3
+watchEffect(() => {
+  A2.value = A0.value + A1.value;
+});
 
 A0.value = 2;
-
-console.log(A2.value); // 4
