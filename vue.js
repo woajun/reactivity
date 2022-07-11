@@ -1,4 +1,4 @@
-const globalWeakMap = new WeakMap();
+const effectSetWeakMap = new WeakMap();
 let activeEffect;
 
 function watchEffect(callback) {
@@ -14,41 +14,37 @@ function watchEffect(callback) {
 function ref(value) {
   const obj = {
     get value() {
-      track(obj, "value");
+      track(obj);
       return value;
     },
     set value(newValue) {
       value = newValue;
-      trigger(obj, "value");
+      trigger(obj);
     },
   };
 
   return obj;
 }
 
-function track(target, key) {
+function track(target) {
   if (activeEffect) {
-    const subscribers = getSubscribersForProperty(target, key);
-    const effectSet = subscribers.get(key);
+    const effectSet = getEffectSet(target);
     effectSet.add(activeEffect);
   }
 }
 
-function trigger(target, key) {
-  const subscribers = getSubscribersForProperty(target, key);
-  const effectSet = subscribers.get(key);
+function trigger(target) {
+  const effectSet = getEffectSet(target);
   effectSet.forEach((effect) => effect());
 }
 
-function getSubscribersForProperty(target, key) {
-  const result = globalWeakMap.get(target);
+function getEffectSet(target) {
+  const result = effectSetWeakMap.get(target);
   if (result) {
     return result;
   } else {
-    const subscribers = new Map();
     const effectSet = new Set();
-    subscribers.set(key, effectSet);
-    globalWeakMap.set(target, subscribers);
-    return subscribers;
+    effectSetWeakMap.set(target, effectSet);
+    return effectSet;
   }
 }
