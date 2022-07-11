@@ -1,8 +1,26 @@
 const effectSetWeakMap = new WeakMap();
 let activeEffect;
 
+function computed(callback) {
+  let innerValue;
+
+  const effect = () => {
+    activeEffect = effect;
+    innerValue = callback();
+    console.log("computed계산됨");
+    activeEffect = null;
+  };
+
+  effect();
+
+  return {
+    get value() {
+      return innerValue;
+    },
+  };
+}
+
 function watchEffect(callback) {
-  // 클로져를 이용해서 callback 에 대한 정보를 가지고 있는 effect를 생성.
   const effect = () => {
     activeEffect = effect;
     callback();

@@ -6,4 +6,4 @@ watchEffect(() => {
   A2.value = A0.value + A1.value;
 });
 
-A0.value = 2;
+const A3 = computed(() => A0.value + A1.value);
