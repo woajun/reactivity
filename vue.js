@@ -70,12 +70,12 @@ function trigger(target) {
 }
 
 function getEffectSet(target) {
-  const result = effectSetWeakMap.get(target);
-  if (result) {
-    return result;
+  const findSet = effectSetWeakMap.get(target);
+  if (findSet) {
+    return findSet;
   } else {
-    const effectSet = new Set();
-    effectSetWeakMap.set(target, effectSet);
-    return effectSet;
+    const newSet = new Set();
+    effectSetWeakMap.set(target, newSet);
+    return newSet;
   }
 }
