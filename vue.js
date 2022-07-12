@@ -44,6 +44,19 @@ function ref(value) {
   return obj;
 }
 
+function reactive(obj) {
+  return new Proxy(obj, {
+    get(target, key) {
+      track(target);
+      return target[key];
+    },
+    set(target, key, value) {
+      target[key] = value;
+      trigger(target, key);
+    },
+  });
+}
+
 function track(target) {
   if (activeEffect) {
     const effectSet = getEffectSet(target);
